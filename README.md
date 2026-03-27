@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # EduCore SMS
 
 Week 1 foundation for EduCore SMS based on the internal development brief.
@@ -60,7 +61,6 @@ JWT_REFRESH_SECRET="your-other-secret-min-16-chars"
 
 ### 4) Run Migrations and Seed Data
 
-```bash
 npm --workspace api run prisma:migrate
 npm --workspace api run prisma:seed
 ```
@@ -236,3 +236,7 @@ npm --workspace api run prisma:generate
 - Submit PRs with tests and documentation
 - Use conventional commit messages
 - Ensure `npm run lint:api` and `npm run lint:web` pass before merge
+=======
+# School
+Repository for the School project
+>>>>>>> 79c06ce9ba611a9eff69832fc06f809f03602e01
