@@ -1,0 +1,200 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  TEACHER
+  PARENT
+  STUDENT
+  ACCOUNTANT
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PARTIAL
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  MTN_MOMO
+  VODAFONE_CASH
+}
+
+model School {
+  id         String    @id @default(cuid())
+  name       String
+  code       String    @unique
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  users      User[]
+  students   Student[]
+  classes    Class[]
+  invoices   Invoice[]
+}
+
+model User {
+  id             String     @id @default(cuid())
+  schoolId       String
+  email          String
+  passwordHash   String
+  firstName      String
+  lastName       String
+  role           UserRole
+  isActive       Boolean    @default(true)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  school         School     @relation(fields: [schoolId], references: [id])
+  studentProfile Student?
+
+  @@unique([schoolId, email])
+  @@index([schoolId, role])
+}
+
+model Student {
+  id                String             @id @default(cuid())
+  schoolId          String
+  studentCode       String
+  userId            String?            @unique
+  firstName         String
+  lastName          String
+  dateOfBirth       DateTime?
+  enrollmentDate    DateTime
+  isActive          Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  school            School             @relation(fields: [schoolId], references: [id])
+  user              User?              @relation(fields: [userId], references: [id])
+  enrollments       StudentEnrollment[]
+  attendanceRecords AttendanceRecord[]
+  gradeEntries      GradeEntry[]
+  invoices          Invoice[]
+
+  @@unique([schoolId, studentCode])
+  @@index([schoolId, isActive])
+}
+
+model Class {
+  id              String             @id @default(cuid())
+  schoolId        String
+  name            String
+  academicYear    String
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  school          School             @relation(fields: [schoolId], references: [id])
+  enrollments     StudentEnrollment[]
+  attendanceItems AttendanceRecord[]
+  gradeEntries    GradeEntry[]
+
+  @@unique([schoolId, name, academicYear])
+}
+
+model StudentEnrollment {
+  id             String    @id @default(cuid())
+  schoolId       String
+  studentId      String
+  classId        String
+  startDate      DateTime
+  endDate        DateTime?
+  createdAt      DateTime  @default(now())
+
+  student        Student   @relation(fields: [studentId], references: [id])
+  class          Class     @relation(fields: [classId], references: [id])
+
+  @@index([schoolId, classId])
+  @@index([schoolId, studentId])
+}
+
+model AttendanceRecord {
+  id             String            @id @default(cuid())
+  schoolId       String
+  studentId      String
+  classId        String
+  date           DateTime
+  subject        String?
+  status         AttendanceStatus
+  markedByUserId String
+  createdAt      DateTime          @default(now())
+
+  student        Student           @relation(fields: [studentId], references: [id])
+  class          Class             @relation(fields: [classId], references: [id])
+
+  @@unique([schoolId, studentId, classId, date, subject])
+  @@index([schoolId, date])
+}
+
+model GradeEntry {
+  id             String    @id @default(cuid())
+  schoolId       String
+  studentId      String
+  classId        String
+  term           String
+  subject        String
+  score          Float
+  maxScore       Float
+  createdByUserId String
+  createdAt      DateTime  @default(now())
+
+  student        Student   @relation(fields: [studentId], references: [id])
+  class          Class     @relation(fields: [classId], references: [id])
+
+  @@index([schoolId, classId, term])
+  @@index([schoolId, studentId, term])
+}
+
+model Invoice {
+  id              String        @id @default(cuid())
+  schoolId        String
+  studentId       String
+  invoiceNumber   String
+  issueDate       DateTime
+  dueDate         DateTime
+  totalAmount     Decimal       @db.Decimal(12, 2)
+  status          InvoiceStatus @default(ISSUED)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  school          School        @relation(fields: [schoolId], references: [id])
+  student         Student       @relation(fields: [studentId], references: [id])
+  payments        Payment[]
+
+  @@unique([schoolId, invoiceNumber])
+  @@index([schoolId, status, dueDate])
+}
+
+model Payment {
+  id               String        @id @default(cuid())
+  schoolId         String
+  invoiceId        String
+  amount           Decimal       @db.Decimal(12, 2)
+  method           PaymentMethod
+  providerRef      String?
+  paidAt           DateTime
+  createdAt        DateTime      @default(now())
+
+  invoice          Invoice       @relation(fields: [invoiceId], references: [id])
+
+  @@index([schoolId, paidAt])
+  @@index([invoiceId])
+}

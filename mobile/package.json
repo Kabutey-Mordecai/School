@@ -1,0 +1,10 @@
+{
+  "name": "@educore/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo \"Mobile app scaffold pending\"",
+    "build": "echo \"Mobile app scaffold pending\"",
+    "lint": "echo \"Mobile app scaffold pending\""
+  }
+}

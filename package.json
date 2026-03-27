@@ -1,0 +1,21 @@
+{
+  "name": "educore-sms",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "api",
+    "web",
+    "mobile",
+    "shared"
+  ],
+  "scripts": {
+    "setup": "npm --workspace api run prisma:generate",
+    "dev": "npm run dev:api",
+    "dev:api": "npm --workspace api run dev",
+    "dev:web": "npm --workspace web run dev",
+    "build:api": "npm --workspace api run build",
+    "build:web": "npm --workspace web run build",
+    "lint:api": "npm --workspace api run lint",
+    "lint:web": "npm --workspace web run lint"
+  }
+}
