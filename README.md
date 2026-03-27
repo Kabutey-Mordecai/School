@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+
 # EduCore SMS
 
 Week 1 foundation for EduCore SMS based on the internal development brief.
@@ -63,7 +64,8 @@ JWT_REFRESH_SECRET="your-other-secret-min-16-chars"
 
 npm --workspace api run prisma:migrate
 npm --workspace api run prisma:seed
-```
+
+````
 
 This creates the demo school and 5 test users (admin, teacher, parent, student, accountant) with password `ChangeMe123!`.
 
@@ -77,7 +79,7 @@ npm run dev:api
 
 # Terminal 2: Web Admin Dashboard (http://localhost:5173)
 npm run dev:web
-```
+````
 
 ### 6) Access the Admin Dashboard
 
@@ -235,8 +237,10 @@ npm --workspace api run prisma:generate
 - Create feature branches from `main`
 - Submit PRs with tests and documentation
 - Use conventional commit messages
-- Ensure `npm run lint:api` and `npm run lint:web` pass before merge
-=======
+- # Ensure `npm run lint:api` and `npm run lint:web` pass before merge
+
 # School
+
 Repository for the School project
->>>>>>> 79c06ce9ba611a9eff69832fc06f809f03602e01
+
+> > > > > > > 79c06ce9ba611a9eff69832fc06f809f03602e01
