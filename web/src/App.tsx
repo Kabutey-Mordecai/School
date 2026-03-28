@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from "react-router-dom";
-import useAuthStore from "./store/auth";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { LoginPage } from "./pages/LoginPage";
 import { Dashboard } from "./pages/Dashboard";
@@ -15,10 +14,6 @@ import { NotificationsPage } from "./pages/NotificationsPage";
 import "./App.css";
 
 function App() {
-  useEffect(() => {
-    useAuthStore.getState().restoreFromStorage();
-  }, []);
-
   return (
     <Router>
       <Routes>

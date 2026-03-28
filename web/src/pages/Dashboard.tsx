@@ -7,7 +7,7 @@ export function Dashboard() {
   const user = useAuthStore((s) => s.user);
   const clearAuth = useAuthStore((s) => s.clearAuth);
 
-  function handleLogout() {``
+  function handleLogout() {
     clearAuth();
     navigate("/login");
   }

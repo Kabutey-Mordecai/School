@@ -46,6 +46,8 @@ export function NotificationsPage() {
   const [channel, setChannel] = useState<Channel>("SMS");
   const [recipient, setRecipient] = useState("");
   const [message, setMessage] = useState("");
+  const [bulkChannel, setBulkChannel] = useState<Channel>("SMS");
+  const [bulkMessage, setBulkMessage] = useState("");
   const [recipientsText, setRecipientsText] = useState("");
   const [logItems, setLogItems] = useState<DispatchLogItem[]>([]);
   const [providerStatus, setProviderStatus] = useState<ProviderStatusItem[]>(
@@ -168,15 +170,15 @@ export function NotificationsPage() {
       await axios.post(
         "/api/v1/notifications/send-bulk",
         {
-          channel,
+          channel: bulkChannel,
           recipients,
-          message,
+          message: bulkMessage,
         },
         { headers: authHeader },
       );
 
       setRecipientsText("");
-      setMessage("");
+      setBulkMessage("");
       await loadDispatchLog();
       await loadDeadLetters();
     } catch (err: any) {
@@ -379,14 +381,36 @@ export function NotificationsPage() {
           style={{ display: "grid", gap: "10px", maxWidth: "520px" }}
         >
           <label>
+            Channel
+            <select
+              value={bulkChannel}
+              onChange={(e) => setBulkChannel(e.target.value as Channel)}
+            >
+              <option value="SMS">SMS</option>
+              <option value="WHATSAPP">WhatsApp</option>
+              <option value="PUSH">Push</option>
+              <option value="IN_APP">In-App</option>
+            </select>
+          </label>
+
+          <label>
             Recipients (one per line)
             <textarea
               value={recipientsText}
               onChange={(e) => setRecipientsText(e.target.value)}
               rows={5}
               placeholder={"+233500000001\n+233500000002"}
+              required
             />
           </label>
+
+          <textarea
+            placeholder="Notification message"
+            value={bulkMessage}
+            onChange={(e) => setBulkMessage(e.target.value)}
+            rows={4}
+            required
+          />
 
           <button type="submit">Send Bulk</button>
         </form>

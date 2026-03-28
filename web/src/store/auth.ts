@@ -28,9 +28,28 @@ export type AuthState = {
   restoreFromStorage: () => void;
 };
 
+function loadFromStorage(): { user: AuthUser | null; tokens: AuthTokens | null } {
+  try {
+    const storedUser = localStorage.getItem("user");
+    const storedTokens = localStorage.getItem("tokens");
+    if (storedUser && storedTokens) {
+      return {
+        user: JSON.parse(storedUser) as AuthUser,
+        tokens: JSON.parse(storedTokens) as AuthTokens,
+      };
+    }
+  } catch {
+    localStorage.removeItem("user");
+    localStorage.removeItem("tokens");
+  }
+  return { user: null, tokens: null };
+}
+
+const stored = loadFromStorage();
+
 const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  tokens: null,
+  user: stored.user,
+  tokens: stored.tokens,
   isLoading: false,
   error: null,
 
